@@ -1,0 +1,1 @@
+# use a .terraformignore file to specify files that shouldn't be uploaded with the Terraform configuration when running plans and applies.
