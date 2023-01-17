@@ -1,15 +1,9 @@
-locals {
-  path = "/users/"
-}
-
 resource "aws_iam_group" "admin" {
   name = "admin"
-  path = local.path
 }
 
 resource "aws_iam_group" "dev" {
   name = "dev"
-  path = local.path
 }
 
 data "aws_iam_policy" "admin_access" {
@@ -38,19 +32,18 @@ resource "aws_iam_group_policy_attachment" "dev" {
 resource "aws_iam_user" "user" {
   count         = length(var.user)
   name          = var.user[count.index].username
-  path          = local.path
   force_destroy = true
 }
 
 resource "aws_iam_user_group_membership" "user" {
-  count  = length(var.user)
-  user   = var.user[count.index].username
+  count  = length(aws_iam_user.user)
+  user   = aws_iam_user.user[count.index].name
   groups = var.user[count.index].groups
 }
 
 resource "aws_iam_user_login_profile" "user" {
-  count                   = length(var.user)
-  user                    = var.user[count.index].username
+  count                   = length(aws_iam_user.user)
+  user                    = aws_iam_user.user[count.index].name
   password_reset_required = true
 }
 
