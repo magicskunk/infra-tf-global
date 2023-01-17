@@ -45,6 +45,7 @@ resource "aws_iam_group_policy_attachment" "dev" {
 resource "aws_iam_user" "user" {
   count         = length(var.user)
   name          = var.user[count.index].username
+  # depends_on = [aws_iam_group.admin, aws_iam_group.dev]
   force_destroy = true
 }
 
@@ -64,9 +65,50 @@ resource "aws_iam_user_login_profile" "user" {
   count                   = length(aws_iam_user.user)
   user                    = aws_iam_user.user[count.index].name
   password_reset_required = true
+
+  lifecycle {
+    ignore_changes = [
+      password_length,
+      password_reset_required,
+      pgp_key,
+    ]
+  }
 }
 
 output "password" {
-  value     = [for index, user in aws_iam_user_login_profile.user : { username = aws_iam_user.user[index].name, pw = user.password }]
+  value     = [
+    for index, user in aws_iam_user_login_profile.user :
+    { username = aws_iam_user.user[index].name, pw = user.password }
+  ]
   sensitive = true
+}
+
+# lambda logs
+# lambda role & policies
+resource "aws_iam_role" "lambda_exec" {
+  name = "serverless_lambda"
+
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Sid       = ""
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+#allows lambda to put log events to cloudwatch
+data "aws_iam_policy" "allow_lambda_exec" {
+  name = "AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "allow_lambda_exec" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = data.aws_iam_policy.allow_lambda_exec.arn
 }

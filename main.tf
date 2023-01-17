@@ -11,3 +11,8 @@ provider "aws" {
     }
   }
 }
+
+provider "aws" {
+  region = lookup(var.aws_region_us, var.aws_account)
+  alias = "us"
+}

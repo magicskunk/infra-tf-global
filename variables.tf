@@ -16,6 +16,11 @@ variable "aws_region" {
   description = "Map of {aws_account, aws_region}"
 }
 
+variable "aws_region_us" {
+  type        = map(string)
+  description = "Map of {aws_account, aws_region_us}. Used for global services"
+}
+
 variable "user" {
   type = list(object({
     username = string
