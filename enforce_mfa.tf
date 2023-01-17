@@ -9,7 +9,8 @@ data "aws_iam_policy_document" "enforce_mfa" {
       "iam:ListMFADevices",
       "iam:ListVirtualMFADevices",
       "iam:ResyncMFADevice",
-      "sts:GetSessionToken"
+      "sts:GetSessionToken",
+      "iam:ChangePassword"
     ]
     resources = ["*"]
     condition {
