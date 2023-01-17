@@ -37,10 +37,3 @@ resource "aws_lambda_function" "send_email" {
   # role argument of this resource is the function's EXECUTION ROLE for identity and access to AWS services and resources.
   role = aws_iam_role.lambda_exec.arn
 }
-
-resource "aws_lambda_alias" "send_email" {
-  name             = "send_email"
-  description      = "Send email lambda fn"
-  function_name    = aws_lambda_function.send_email.function_name
-  function_version = "$LATEST"
-}
