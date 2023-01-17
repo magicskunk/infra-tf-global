@@ -12,5 +12,10 @@ user = [
     username = "dejano.with.tie"
     email    = "dejanopocket+magicskunk@gmail.com"
     groups   = ["admin", "dev"]
+  },
+  {
+    username = "dejano.with.tie.another"
+    email    = "dejanopocket+magicskunk@gmail.com"
+    groups   = ["admin"]
   }
 ]
