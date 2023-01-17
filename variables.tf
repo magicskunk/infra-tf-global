@@ -15,3 +15,11 @@ variable "aws_region" {
   type        = map(string)
   description = "Map of {aws_account, aws_region}"
 }
+
+variable "user" {
+  type = list(object({
+    username = string
+    groups   = list(string)
+    email    = string
+  }))
+}
