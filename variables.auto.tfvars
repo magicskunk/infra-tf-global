@@ -9,7 +9,7 @@ aws_region = {
 
 user = [
   {
-    username = "dejano-with-tie"
+    username = "dejano.with.tie"
     email    = "dejanopocket+magicskunk@gmail.com"
     groups   = ["admin", "dev"]
   }
