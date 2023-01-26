@@ -28,3 +28,8 @@ variable "user" {
     email    = string
   }))
 }
+
+variable "primary_domain" {
+  type        = string
+  description = "Primary domain"
+}

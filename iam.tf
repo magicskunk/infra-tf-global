@@ -47,6 +47,9 @@ resource "aws_iam_user" "user" {
   name          = var.user[count.index].username
   # depends_on = [aws_iam_group.admin, aws_iam_group.dev]
   force_destroy = true
+  tags          = {
+    email = var.user[count.index].email
+  }
 }
 
 resource "aws_iam_user_policy_attachment" "allow_password_change" {
@@ -76,7 +79,7 @@ resource "aws_iam_user_login_profile" "user" {
 }
 
 output "password" {
-  value     = [
+  value = [
     for index, user in aws_iam_user_login_profile.user :
     { username = aws_iam_user.user[index].name, pw = user.password }
   ]

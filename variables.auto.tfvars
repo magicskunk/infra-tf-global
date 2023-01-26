@@ -17,13 +17,11 @@ user = [
     username = "dejano.with.tie"
     email    = "dejanopocket+magicskunk@gmail.com"
     groups   = ["admin", "dev"]
-  }, {
-    username = "dejano.with.tie.dev3"
-    email    = "dejanopocket+magicskunk@gmail.com"
-    groups   = ["dev"]
-  }, {
-    username = "dejano.with.tie.dev4"
-    email    = "dejanopocket+magicskunk@gmail.com"
+    }, {
+    username = "dejano.with.tie.dev1"
+    email    = "dejano.with.tie+magicskunk@gmail.com"
     groups   = ["dev"]
   }
 ]
+
+primary_domain = "karambol.dev"
