@@ -1,9 +1,10 @@
 # packing and adding lambda fn to s3
+# todo lambda from ecr https://hands-on.cloud/terraform-docker-lambda-example/
 data "archive_file" "lambda_send_email" {
   type = "zip"
 
-  source_file = "${path.module}/src/lambda_send_email.js"
-  output_path = "${path.module}/src/dist/lambda_send_email.zip"
+  source_dir  = "${path.module}/lambda/src"
+  output_path = "${path.module}/lambda/dist/lambda_send_email.zip"
 }
 
 resource "aws_s3_object" "lambda_send_email" {
@@ -30,7 +31,7 @@ resource "aws_lambda_function" "send_email" {
   s3_key    = aws_s3_object.lambda_send_email.key
 
   runtime = "nodejs18.x"
-  handler = "lambda_send_email.handler"
+  handler = "lambda_send_email.run"
 
   source_code_hash = data.archive_file.lambda_send_email.output_base64sha256
 

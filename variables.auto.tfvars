@@ -14,11 +14,7 @@ aws_region_us = {
 
 user = [
   {
-    username = "dejano.with.tie"
-    email    = "dejanopocket+magicskunk@gmail.com"
-    groups   = ["admin", "dev"]
-    }, {
-    username = "dejano.with.tie.dev1"
+    username = "dejano.with.tie.dev"
     email    = "dejano.with.tie+magicskunk@gmail.com"
     groups   = ["dev"]
   }
