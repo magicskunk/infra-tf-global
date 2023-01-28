@@ -11,15 +11,20 @@ const parseHtml = async (filePath, variables) => {
   return variables.reduce(
     (acc, it) => replace(acc, `#${it.name}#`, it.value), html
   );
-}
+};
 
 const replace = (original, searchTxt, replaceTxt) => {
   const regex = new RegExp(searchTxt, 'g');
   return original.replace(regex, replaceTxt);
-}
+};
 
-const run = async (event) => {
-  console.log('Event: ', event);
+const run = async (events) => {
+  console.log('Event: ', events);
+  if (events.Records.length !== 1) {
+    console.error('invalid event payload');
+    return;
+  }
+  const event = JSON.parse(events.Records[0].body);
 
   const iam = new IAMClient({});
   const ses = new SESClient({region: region});
@@ -28,12 +33,12 @@ const run = async (event) => {
   const accountId = event.detail.userIdentity.accountId;
 
   if (!username) {
-    console.error('invalid event payload, does not contain username param')
+    console.error('invalid event payload, does not contain username param');
     return;
   }
 
   if (!accountId) {
-    console.error('invalid event payload, does not contain accountId param')
+    console.error('invalid event payload, does not contain accountId param');
     return;
   }
 
@@ -42,7 +47,7 @@ const run = async (event) => {
     const email = user.Tags.find(it => it.Key === 'email')?.Value;
     const pwd = generatePwd({
       length: 20, numbers: true, symbols: true, strict: true, excludeSimilarCharacters: true, exclude: '`'
-    })
+    });
     await iam.send(new UpdateLoginProfileCommand(
       {UserName: username, Password: pwd, PasswordResetRequired: true}
     ));
@@ -63,9 +68,13 @@ const run = async (event) => {
     console.debug('Sending registration email to: ', email);
     return await ses.send(sendEmailCommand);
   } catch (err) {
-    console.error(err)
-    return err;
+    console.error(err);
+    throw err;
+    // if (!(err instanceof EntityTemporarilyUnmodifiableException)) {
+    //   throw err;
+    // }
+    // return err;
   }
-}
+};
 
 export {run};

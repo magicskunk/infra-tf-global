@@ -43,11 +43,11 @@ resource "aws_iam_group_policy_attachment" "dev" {
 }
 
 resource "aws_iam_user" "user" {
-  count = length(var.user)
-  name  = var.user[count.index].username
+  count         = length(var.user)
+  name          = var.user[count.index].username
   # depends_on = [aws_iam_group.admin, aws_iam_group.dev]
   force_destroy = true
-  tags = {
+  tags          = {
     email = var.user[count.index].email
   }
 }
@@ -76,62 +76,4 @@ resource "aws_iam_user_login_profile" "user" {
       pgp_key,
     ]
   }
-}
-
-output "password" {
-  value = [
-    for index, user in aws_iam_user_login_profile.user :
-    { username = aws_iam_user.user[index].name, pw = user.password }
-  ]
-  sensitive = true
-}
-
-# lambda logs
-# lambda role & policies
-resource "aws_iam_role" "lambda_exec" {
-  name = "serverless_lambda"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid    = ""
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-#allows lambda to put log events to cloudwatch
-data "aws_iam_policy" "allow_lambda_exec" {
-  name = "AWSLambdaBasicExecutionRole"
-}
-
-resource "aws_iam_role_policy_attachment" "allow_lambda_exec" {
-  role       = aws_iam_role.lambda_exec.name
-  policy_arn = data.aws_iam_policy.allow_lambda_exec.arn
-}
-
-# allow lambda to reset pwd, fetch user tags and send email
-resource "aws_iam_policy" "send_email" {
-  name = "send_email"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action   = ["iam:ListUserTags", "iam:UpdateLoginProfile", "ses:SendEmail", "ses:SendRawEmail"]
-        Effect   = "Allow"
-        Resource = "*"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "allow_lambda_email_sending" {
-  role       = aws_iam_role.lambda_exec.name
-  policy_arn = aws_iam_policy.send_email.arn
 }

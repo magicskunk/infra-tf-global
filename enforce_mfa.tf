@@ -1,7 +1,7 @@
 data "aws_iam_policy_document" "enforce_mfa" {
   statement {
-    sid    = "DenyAllExceptListedIfNoMFA"
-    effect = "Deny"
+    sid         = "DenyAllExceptListedIfNoMFA"
+    effect      = "Deny"
     not_actions = [
       "iam:CreateVirtualMFADevice",
       "iam:EnableMFADevice",
@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "enforce_mfa" {
     condition {
       test     = "BoolIfExists"
       variable = "aws:MultiFactorAuthPresent"
-      values   = ["false", ]
+      values   = ["false",]
     }
   }
 }

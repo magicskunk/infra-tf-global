@@ -3,24 +3,18 @@ resource "aws_iam_role" "github_actions" {
   description = "GitHub actions role used to interact with AWS via OIDC"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version   = "2012-10-17"
     Statement = [
       {
-        Sid    = "RoleForGitHubActions",
-        Effect = "Allow",
+        Sid       = "RoleForGitHubActions",
+        Effect    = "Allow",
         Principal = {
           Federated = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/token.actions.githubusercontent.com"
         },
-        Action = "sts:AssumeRoleWithWebIdentity",
+        Action    = "sts:AssumeRoleWithWebIdentity",
         Condition = {
           StringLike = {
-            # cleanup: not sure which one works -.-' I think the last two
-            "token.actions.githubusercontent.com:sub" = [
-              "repo:${var.organization_name}/*",
-              "repo:${var.organization_name}/*:*",
-              "repo:github.com/${var.organization_name}",
-              "repo:github.com/${var.organization_name}/*"
-            ]
+            "token.actions.githubusercontent.com:sub" = ["repo:${var.organization_name}/*"]
           },
           "ForAllValues:StringEquals" : {
             "token.actions.githubusercontent.com:aud" : "sts.amazonaws.com",
