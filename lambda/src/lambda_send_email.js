@@ -39,12 +39,10 @@ const run = async (event) => {
 
   try {
     const user = await iam.send(new ListUserTagsCommand({UserName: username}));
-    console.log('User: ', user);
     const email = user.Tags.find(it => it.Key === 'email')?.Value;
     const pwd = generatePwd({
       length: 20, numbers: true, symbols: true, strict: true, excludeSimilarCharacters: true, exclude: '`'
     })
-    console.log(`pwd: ${pwd}`);
     await iam.send(new UpdateLoginProfileCommand(
       {UserName: username, Password: pwd, PasswordResetRequired: true}
     ));
@@ -55,15 +53,14 @@ const run = async (event) => {
       {name: 'pwd', value: pwd}
     ]);
     const sendEmailCommand = new SendEmailCommand({
-      Destination: {CcAddresses: [], ToAddresses: [email]},
+      Source: fromEmail,
+      Destination: {ToAddresses: [email], CcAddresses: []},
       Message: {
         Body: {Html: {Charset: "UTF-8", Data: html}},
-        Subject: {Charset: "UTF-8", Data: "Magicskunk - AWS account",}
-      },
-      Source: fromEmail
+        Subject: {Charset: "UTF-8", Data: "Magicskunk - AWS account"}
+      }
     });
-    console.log('Recipient email: ', email);
-    console.log('Send email command: ', sendEmailCommand);
+    console.debug('Sending registration email to: ', email);
     return await ses.send(sendEmailCommand);
   } catch (err) {
     console.error(err)

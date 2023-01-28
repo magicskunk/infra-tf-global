@@ -14,7 +14,13 @@ resource "aws_iam_role" "github_actions" {
         Action = "sts:AssumeRoleWithWebIdentity",
         Condition = {
           StringLike = {
-            "token.actions.githubusercontent.com:sub" = ["repo:${var.organization_name}/*", "repo:${var.organization_name}/*:*", "repo:github.com/${var.organization_name}", "repo:github.com/${var.organization_name}/*"]
+            # cleanup: not sure which one works -.-' I think the last two
+            "token.actions.githubusercontent.com:sub" = [
+              "repo:${var.organization_name}/*",
+              "repo:${var.organization_name}/*:*",
+              "repo:github.com/${var.organization_name}",
+              "repo:github.com/${var.organization_name}/*"
+            ]
           },
           "ForAllValues:StringEquals" : {
             "token.actions.githubusercontent.com:aud" : "sts.amazonaws.com",

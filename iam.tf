@@ -116,7 +116,7 @@ resource "aws_iam_role_policy_attachment" "allow_lambda_exec" {
   policy_arn = data.aws_iam_policy.allow_lambda_exec.arn
 }
 
-# allow lambda to send email
+# allow lambda to reset pwd, fetch user tags and send email
 resource "aws_iam_policy" "send_email" {
   name = "send_email"
   policy = jsonencode({
