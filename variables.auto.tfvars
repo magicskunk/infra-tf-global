@@ -1,4 +1,4 @@
-project_name = "global"
+project_name = "infra-global"
 
 aws_account = "nonprod"
 
@@ -14,9 +14,14 @@ aws_region_us = {
 
 user = [
   {
-    username = "dejano.with.tie.dev"
+    username = "dev"
     email    = "dejano.with.tie+magicskunk@gmail.com"
     groups   = ["dev"]
+  },
+  {
+    username = "ceo"
+    email    = "fedjatomasev+magicskunk@yahoo.com"
+    groups   = ["admin"]
   }
 ]
 
