@@ -1,5 +1,49 @@
-# need another bridge to sync from us to specific region
-# or move lambda to us region
+data "aws_cloudwatch_event_bus" "default_us" {
+  provider = "aws.us"
+  name     = "default"
+}
+
+data "aws_cloudwatch_event_bus" "default" {
+  name = "default"
+}
+
+resource "aws_cloudwatch_event_rule" "iam_login_profile_created_in_us" {
+  provider      = "aws.us"
+  name          = "capture_aws_iam_login_profile_created"
+  description   = "Capture each AWS Console Profile Creation"
+  event_pattern = <<EOF
+{
+  "source": ["aws.iam"],
+  "detail-type": ["AWS API Call via CloudTrail"],
+  "detail": {
+    "eventSource": ["iam.amazonaws.com"],
+    "eventName": ["CreateLoginProfile"]
+  }
+}
+EOF
+}
+
+data "aws_iam_policy_document" "allow_put_events" {
+  provider = "aws.us"
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = [data.aws_cloudwatch_event_bus.default.arn]
+    actions   = ["events:PutEvents"]
+  }
+}
+
+resource "aws_cloudwatch_event_bus_policy" "allow_put_events" {
+  provider       = "aws.us"
+  policy         = data.aws_iam_policy_document.allow_put_events.json
+  event_bus_name = data.aws_cloudwatch_event_bus.default_us.name
+}
+
+resource "aws_cloudwatch_event_target" "propagate_to_another_region" {
+  rule = aws_cloudwatch_event_rule.iam_login_profile_created_in_us.arn
+  arn  = aws_cloudwatch_event_rule.iam_login_profile_created.arn
+}
+
 resource "aws_cloudwatch_event_rule" "iam_login_profile_created" {
   name        = "capture_aws_iam_login_profile_created"
   description = "Capture each AWS Console Profile Creation"
