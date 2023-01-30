@@ -14,13 +14,13 @@ aws_region_us = {
 
 user = [
   {
-    username = "dev"
-    email    = "dejano.with.tie+magicskunk@gmail.com"
-    groups   = ["dev"]
+    username = "ceo@magicskunk.dev"
+    email    = "fedjatomasev@yahoo.com"
+    groups   = ["admin"]
   },
   {
-    username = "ceo"
-    email    = "fedjatomasev+magicskunk@yahoo.com"
+    username = "dejano@magicskunk.dev"
+    email    = "dejano.with.tie@gmail.com"
     groups   = ["admin"]
   }
 ]
