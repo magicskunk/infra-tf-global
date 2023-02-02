@@ -4,7 +4,7 @@ terraform {
     organization = "magicskunk"
 
     workspaces {
-      name = "global-nonprod"
+      name = "global-nonprod-cli"
     }
   }
 
