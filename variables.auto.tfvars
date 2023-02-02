@@ -17,7 +17,7 @@ user = [
     groups   = ["admin"]
   },
   {
-    username = "dejano@magicskunk.dev"
+    username = "dejano.dev@magicskunk.dev"
     email    = "dejano.with.tie@gmail.com"
     groups   = ["dev"]
   },

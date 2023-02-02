@@ -8,6 +8,7 @@
 ## destroy the whole stack except above excluded resource(s)
 # terraform destroy
 resource "aws_route53_zone" "main" {
+  count = 0 # temp fix, move these resources to static-repo
   name = var.primary_domain
 
   # To keep the same name servers
@@ -21,13 +22,13 @@ resource "aws_route53_record" "main_ns" {
   name            = var.primary_domain
   ttl             = 172800
   type            = "NS"
-  zone_id         = aws_route53_zone.main.zone_id
+  zone_id         = aws_route53_zone.main[0].zone_id
 
   records = [
-    aws_route53_zone.main.name_servers[0],
-    aws_route53_zone.main.name_servers[1],
-    aws_route53_zone.main.name_servers[2],
-    aws_route53_zone.main.name_servers[3],
+    aws_route53_zone.main[0].name_servers[0],
+    aws_route53_zone.main[0].name_servers[1],
+    aws_route53_zone.main[0].name_servers[2],
+    aws_route53_zone.main[0].name_servers[3],
   ]
 
   lifecycle {
